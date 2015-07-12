@@ -15,7 +15,7 @@ stmJSON(mod, documents_raw=NULL, documents_matrix=NULL,
 }
 \arguments{
   \item{mod}{
-An \code{STM} fitted model from the \pkg{stm} package.  
+An \code{STM} fitted model from the \pkg{stm} package.
 }
   \item{documents_raw}{
   The raw documents used to generate the STM model. A character vector where each entry is the full text of a document.
@@ -46,7 +46,7 @@ A nested JSON structure representing the hierarchical model is produced as follo
 
 The function finds all binary splits in the middle of the clustering tree whose clustering height measure is below the threshold specified in the \code{clustering_threshold} argument. All these splits are marked as aggregation points. The routine retrieves the merge matrix from the output of \code{hclust}, and produces a new merge list by deleting all the splits performed at aggregation points along the tree. While the \code{hclust} merge matrix only contains binary splits, the new merge list can contain non-binary cluster splits.
 
-The merge list is transformed into a structure of nested lists with a recursive function call. Each level of this nested structure corresponds to a node in the hierarchical representation of the STM model. The data structure is eventually transformed into a JSON object by using the \href{http://cran.r-project.org/web/packages/jsonlite/index.html}{\pkg{jsonlite}} package.
+The merge list is transformed into a structure of nested lists with a recursive function call. Each level of this nested structure corresponds to a node in the hierarchical representation of the STM model. The data structure is eventually transformed into a JSON object by using the \href{http://cran.r-project.org/package=jsonlite}{\pkg{jsonlite}} package.
 
 New beta matrices and top words are computed for each of the topic clusters according to their membership, by marginalizing over content covariates. The clusters are labeled accordingly.
 }
