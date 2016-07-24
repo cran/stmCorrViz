@@ -9,7 +9,8 @@ This function generates an interactive, full-model HTML visualization of topic h
 }
 \usage{
 stmCorrViz(mod, file_out, documents_raw=NULL, documents_matrix=NULL,
-           title="STM Model", clustering_threshold=1.5, 
+           title="STM Model", clustering_threshold=FALSE,
+           search_options = list(range_min=.05, range_max=5, step=.05), 
            labels_number=7, display=TRUE, verbose=FALSE)
 }
 \arguments{
@@ -29,6 +30,11 @@ Root node label. This defaults to "STM Model".
 }
   \item{clustering_threshold}{
 A parameter specifying the level of aggregation in the hierarchical clustering routine for topics. Lower threshold values produce more binary splits and deeper trees, while higher threshold values produce more aggregation and trees that have significant breadth rather than depth. See below for more details.
+
+If \code{FALSE}, a grid search is performed to find valid thresholds is performed using \code{\link{findThreshold}}. The valid clustering threshold resulting in a median level of tree complexity is chosen.
+}
+  \item{search_options}{
+  List specifying the grid search parameters to be used by {\link{findThreshold}}. Only necessary if \code{clustering_threshold} is \code{FALSE}. 
 }
   \item{labels_number}{
 The number of top words used to label each node (topic or topical cluster) in the visualization.
@@ -57,33 +63,11 @@ The visualization is largely built on top of Mike Bostock's \href{http://bl.ocks
 }
 
 \examples{
-  \dontrun{
-      require(stm)
-      data(gadarian)
+data(immigration_perceptions)
 
-      # Pre-processing the data
-      temp <- textProcessor(documents=gadarian$open.ended.response, 
-        metadata=gadarian)
-      meta <- temp$meta
-      vocab <- temp$vocab
-      docs <- temp$documents
-      out <- prepDocuments(docs, vocab, meta)
-      docs <-out$documents
-      vocab<-out$vocab
-      meta <-out$meta
-
-      # Fitting the STM model
-      set.seed(02138)
-      mod.out <- stm(docs, vocab, 20, 
-        prevalence=~treatment + s(pid_rep), data=meta)
-
-      # Generating the visualization
-      stmCorrViz(mod.out, "corrviz.html", 
-           documents_raw=as.character(gadarian$open.ended.response), 
-           documents_matrix=docs,
-           verbose=TRUE)
-
-    }
+stmCorrViz(immigration_perceptions$model, "corrviz.html", 
+  documents_raw=immigration_perceptions$raw_documents, 
+  documents_matrix=immigration_perceptions$documents_matrix)
 }
 
 \references{

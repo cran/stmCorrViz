@@ -1,11 +1,29 @@
+##' @export
 stmCorrViz <-
+
 function(mod, file_out, documents_raw=NULL,
                            documents_matrix=NULL,
                            title="STM Model",
-                           clustering_threshold=1.5,
+                           clustering_threshold=FALSE,
+                           search_options = list(range_min=.05, range_max=5, step=.05),
                            labels_number=7,
                            display=TRUE,
                            verbose=FALSE){
+
+  # Find threshold if not specified
+  if(clustering_threshold==FALSE){
+    
+    grid = findThreshold(mod, documents_raw, documents_matrix, 
+      search_options$range_min, search_options$range_max, search_options$step)
+    grid = grid[grid$juncture_points > -1,]
+
+    if(nrow(grid)==0){
+        stop("Grid search failed to find a valid threshold. Try different search parameters.")
+    }
+
+    grid$median_diff = abs(grid$juncture_points - stats::median(grid$juncture_points))
+    clustering_threshold = grid[grid$median_diff==min(grid$median_diff),'threshold'][1]
+  }
 
   JSON <- try(stmJSON(mod, documents_raw, documents_matrix, title, clustering_threshold,
     labels_number, verbose), silent=TRUE)
@@ -65,7 +83,7 @@ function(mod, file_out, documents_raw=NULL,
   <button type="button" class="btn btn-default" data-dismiss="modal">Close</button></div></div></div></div></body>')
 
   fileConn<-file(file_out)
-  writeLines(paste0(header, JSON, footer), fileConn)
+  writeLines(paste0(header, JSON$json, footer), fileConn)
   close(fileConn)
 
   if(display==TRUE){

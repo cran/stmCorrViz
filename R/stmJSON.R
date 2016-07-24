@@ -1,3 +1,5 @@
+##' @export
+
 stmJSON <-
 function(mod, documents_raw=NULL, documents_matrix=NULL,
                     title="STM Model", clustering_threshold=1.5,
@@ -108,5 +110,5 @@ function(mod, documents_raw=NULL, documents_matrix=NULL,
 
   # Convert structure to JSON
   out_JSON <- jsonlite::toJSON(out, force=TRUE)
-  return(out_JSON)
+  return(list(json=out_JSON, n_merge=length(merge_list)))
 }
